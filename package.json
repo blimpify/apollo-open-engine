@@ -1,0 +1,28 @@
+{
+  "name": "apollo-open-engine",
+  "version": "1.0.0",
+  "description": "Open alternative to apollo-engine",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blimpify/apollo-open-engine.git"
+  },
+  "keywords": [
+    "apollo",
+    "graphql",
+    "apollo-engine"
+  ],
+  "author": "Damian Lion Maring",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/blimpify/apollo-open-engine/issues"
+  },
+  "homepage": "https://github.com/blimpify/apollo-open-engine#readme",
+  "dependencies": {
+    "body-parser": "1.19.0",
+    "express": "4.16.4"
+  }
+}
