@@ -1,5 +1,19 @@
 # Apollo Open Engine
 
+Work in Progress alternative to the commercial available apollo-engine based on the same protocol. 
+
+```js
+const apolloServer = new ApolloServer({
+    ...
+    engine: {
+      endpointUrl: 'http://localhost:8000',
+      apiKey: 'fake:key', // currently doesent matter
+      sendReportsImmediately: true // helps with debugging
+    },
+    ...
+  });
+```
+
 ## Install
 
 ```bash
