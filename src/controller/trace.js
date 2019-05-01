@@ -27,6 +27,9 @@ class Trace {
       .then(data => {
         const decoded = FullTracesReport.decode(data);
         req.log.trace(decoded, 'successfully parsed trace');
+
+        //TODO store trace in db
+        //TODO only respond success if trace stored correct
         res.json({
           message: 'received data successfully'
         });
