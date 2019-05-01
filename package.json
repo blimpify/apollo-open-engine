@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/blimpify/apollo-open-engine#readme",
   "dependencies": {
+    "apollo-engine-reporting-protobuf": "0.2.1",
     "body-parser": "1.19.0",
-    "express": "4.16.4"
+    "express": "4.16.4",
+    "pino": "5.12.3"
   }
 }
