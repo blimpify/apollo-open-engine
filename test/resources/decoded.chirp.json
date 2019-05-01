@@ -1,0 +1,128 @@
+{
+  "header": {
+    "hostname": "hostname",
+    "agentVersion": "apollo-engine-reporting@1.0.2",
+    "runtimeVersion": "node v10.0.0",
+    "uname": "darwin, Darwin, 18.2.0, x64)",
+    "schemaTag": "",
+    "schemaHash": "14ae524afe7d03e6df396b80f8a53dbd8c06172a552f4f2f15572d344ef683493227d48991a70598b90a59302920931ff5c64d2b980698cac3207ec88a78fe2c"
+  },
+  "tracesPerQuery": {
+    "# -\n{chirps{id}}": {
+      "trace": [
+        {
+          "endTime": {
+            "seconds": "1556752867",
+            "nanos": 561000000
+          },
+          "startTime": {
+            "seconds": "1556752867",
+            "nanos": 559000000
+          },
+          "details": {},
+          "clientName": "",
+          "clientVersion": "",
+          "http": {
+            "method": "POST",
+            "requestHeaders": {
+              "accept": {
+                "value": [
+                  "*/*"
+                ]
+              },
+              "accept-encoding": {
+                "value": [
+                  "gzip, deflate, br"
+                ]
+              },
+              "accept-language": {
+                "value": [
+                  "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7,fr;q=0.6"
+                ]
+              },
+              "connection": {
+                "value": [
+                  "keep-alive"
+                ]
+              },
+              "content-length": {
+                "value": [
+                  "79"
+                ]
+              },
+              "content-type": {
+                "value": [
+                  "application/json"
+                ]
+              },
+              "dnt": {
+                "value": [
+                  "1"
+                ]
+              },
+              "host": {
+                "value": [
+                  "localhost:5000"
+                ]
+              },
+              "origin": {
+                "value": [
+                  "http://localhost:5000"
+                ]
+              },
+              "referer": {
+                "value": [
+                  "http://localhost:5000/graphql"
+                ]
+              },
+              "user-agent": {
+                "value": [
+                  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
+                ]
+              }
+            }
+          },
+          "durationNs": "2108980",
+          "root": {
+            "child": [
+              {
+                "fieldName": "chirps",
+                "type": "[Chirp!]",
+                "startTime": "616947",
+                "endTime": "1654427",
+                "child": [
+                  {
+                    "index": 0,
+                    "child": [
+                      {
+                        "fieldName": "id",
+                        "type": "ID!",
+                        "startTime": "1741239",
+                        "endTime": "1763563",
+                        "parentType": "Chirp"
+                      }
+                    ]
+                  },
+                  {
+                    "index": 1,
+                    "child": [
+                      {
+                        "fieldName": "id",
+                        "type": "ID!",
+                        "startTime": "1800253",
+                        "endTime": "1816407",
+                        "parentType": "Chirp"
+                      }
+                    ]
+                  }
+                ],
+                "parentType": "Query"
+              }
+            ]
+          },
+          "clientReferenceId": ""
+        }
+      ]
+    }
+  }
+}

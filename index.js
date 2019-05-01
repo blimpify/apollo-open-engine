@@ -3,15 +3,33 @@
 
 
 const express = require('express');
-const app = express();
 const pino = require('pino');
 const  logger = pino({
   useLevelLabels: true,
+  // Available 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'.
+  level: process.env.LOG_LEVEL || 'info',
   serializers: {
     err: pino.stdSerializers.err
   }
 });
+const httpLogger = require('pino-http')({
+  logger
+});
 
+/**
+ * Setup Express App
+ * @type {app}
+ */
+const app = express();
+
+/**
+ * Setup Express Logger
+ */
+app.use(httpLogger);
+
+/**
+ * Setup Router
+ */
 app.use(require('./src/router'));
 
 app.use((err, req, res, next) => {
@@ -35,3 +53,5 @@ const port = process.env.PORT || 8000;
 app.listen(port, () => {
   logger.info('App listening on port %s', port);
 });
+
+module.exports = app;

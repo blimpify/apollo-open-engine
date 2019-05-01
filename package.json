@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "Open alternative to apollo-engine",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js --experimental-modules",
+    "test": " LOG_LEVEL=silent mocha"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,13 @@
     "apollo-engine-reporting-protobuf": "0.2.1",
     "body-parser": "1.19.0",
     "express": "4.16.4",
-    "pino": "5.12.3"
+    "pino": "5.12.3",
+    "pino-http": "4.2.0"
+  },
+  "devDependencies": {
+    "chai": "4.2.0",
+    "chai-http": "4.3.0",
+    "mocha": "6.1.4",
+    "nyc": "14.0.0"
   }
 }
