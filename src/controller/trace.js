@@ -3,7 +3,7 @@ const {
   FullTracesReport
 } = require('apollo-engine-reporting-protobuf');
 const { streamToBuffer } = require('../lib/stream-helper');
-const { storeTrace } = require('../dao/mongo/mongo-dao');
+const { storeTrace } = require('../dao/mongo/dao');
 
 /**
  * Parse based on Apollo Server reporting

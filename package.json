@@ -25,8 +25,10 @@
   "homepage": "https://github.com/blimpify/apollo-open-engine#readme",
   "dependencies": {
     "apollo-engine-reporting-protobuf": "0.2.1",
+    "apollo-server": "2.5.0",
     "body-parser": "1.19.0",
     "express": "4.16.4",
+    "graphql": "14.3.0",
     "mongoose": "5.5.7",
     "pino": "5.12.3",
     "pino-http": "4.2.0"

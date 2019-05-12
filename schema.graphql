@@ -1,0 +1,56 @@
+type TraceHeader {
+    hostname: String
+    agentVersion: String
+    runtimeVersion: String
+    uname: String
+    schemaTag: String
+    schemaHash: String
+}
+
+type TraceStartTime {
+    seconds: String,
+    nanos: Int,
+}
+
+type TraceEndTime {
+    seconds: String,
+    nanos: Int,
+}
+
+type TraceRequestHeader {
+    key: String
+    value: String
+}
+
+type TraceHttp {
+    method: String
+    requestHeaders: [TraceRequestHeader]
+}
+
+type TraceChild {
+    index: Int
+    depth: Int
+    fieldName: String
+    type: String
+    startTime: String
+    endTime: String
+}
+
+type Trace {
+    id: ID!
+    header: TraceHeader
+    queryId: String
+    startTime: TraceStartTime
+    endTime: TraceEndTime
+    clientName: String
+    clientVersion: String
+    http: TraceHttp
+    clientReferenceId: String
+    durationNs: String
+    child: [TraceChild]
+}
+
+type Query {
+    traces: [Trace]
+    trace(id: ID!): Trace
+}

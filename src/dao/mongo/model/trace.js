@@ -1,4 +1,4 @@
-const { Schema } = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 const TraceSchema = new Schema({
   header: {
@@ -44,6 +44,9 @@ const TraceSchema = new Schema({
   ]
 });
 
+const Trace = model('Trace', TraceSchema);
+
 module.exports = {
-  TraceSchema
+  TraceSchema,
+  Trace
 };
