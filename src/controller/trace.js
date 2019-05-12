@@ -3,6 +3,7 @@ const {
   FullTracesReport
 } = require('apollo-engine-reporting-protobuf');
 const { streamToBuffer } = require('../lib/stream-helper');
+const { storeTrace } = require('../dao/mongo/mongo-dao');
 
 /**
  * Parse based on Apollo Server reporting
@@ -27,15 +28,18 @@ class Trace {
       .then(data => {
         const decoded = FullTracesReport.decode(data);
         req.log.trace(decoded, 'successfully parsed trace');
-
-        //TODO store trace in db
-        //TODO only respond success if trace stored correct
-        res.json({
-          message: 'received data successfully'
-        });
+        storeTrace(decoded)
+          .then(response => {
+            return res.json({
+              message: 'stored data successfully'
+            });
+          })
+          .catch(err => {
+            return next(err);
+          });
       })
       .catch(err => {
-        next(err);
+        return next(err);
       });
   }
 }
