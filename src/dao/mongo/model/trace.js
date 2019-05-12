@@ -1,7 +1,18 @@
 const { Schema } = require('mongoose');
 
 const TraceSchema = new Schema({
-  queryId: String,
+  header: {
+    hostname: String,
+    agentVersion: String,
+    runtimeVersion: String,
+    uname: String,
+    schemaTag: String,
+    schemaHash: String
+  },
+  queryId: {
+    type: String,
+    index: true,
+  },
   endTime: {
     seconds: String,
     nanos: Number,
@@ -19,33 +30,20 @@ const TraceSchema = new Schema({
       of: String
     }
   },
+  clientReferenceId: String,
   durationNs: String,
-  root: [
+  child: [
     {
-      depth: Number,
       index: Number,
+      depth: Number,
       fieldName: String,
-      type: String,
+      type: { type: String },
       startTime: String,
       endTime: String
     }
-  ],
-  clientReferenceId: String
-});
-
-const ApolloTraceSchema = new Schema({
-  header: {
-    hostname: String,
-    agentVersion: String,
-    runtimeVersion: String,
-    uname: String,
-    schemaTag: String,
-    schemaHash: String
-  },
-  tracesPerQuery: [TraceSchema]
+  ]
 });
 
 module.exports = {
-  ApolloTraceSchema,
   TraceSchema
 };

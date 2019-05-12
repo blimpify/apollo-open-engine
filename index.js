@@ -4,6 +4,7 @@
 
 const express = require('express');
 const pino = require('pino');
+const mongoose = require('mongoose');
 const  logger = pino({
   useLevelLabels: true,
   // Available 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'.
@@ -15,6 +16,9 @@ const  logger = pino({
 const httpLogger = require('pino-http')({
   logger
 });
+
+mongoose.set('useCreateIndex', true);
+mongoose.connect('mongodb://localhost/apollo', {useNewUrlParser: true});
 
 /**
  * Setup Express App
