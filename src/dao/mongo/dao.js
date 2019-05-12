@@ -1,10 +1,9 @@
-const { model } = require('mongoose');
-const { TraceSchema } = require('./model/trace');
+const { Trace } = require('./model/trace');
 const { flattenChild } = require('../../lib/trace-helper');
 
-const TraceModel = model('Trace', TraceSchema);
 
-class MongoDao {
+
+class Dao {
   static storeTrace (decoded) {
     let tracesPerQuery = [];
 
@@ -24,7 +23,7 @@ class MongoDao {
 
         let child = flattenChild(trace.root);
 
-        let traceModel = new TraceModel({
+        let traceModel = new Trace({
           header: decoded.header,
           queryId: key,
           endTime: trace.endTime,
@@ -45,5 +44,5 @@ class MongoDao {
 }
 
 module.exports = {
-  storeTrace: MongoDao.storeTrace
+  storeTrace: Dao.storeTrace
 };
