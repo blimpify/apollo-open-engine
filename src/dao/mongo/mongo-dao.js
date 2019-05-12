@@ -1,44 +1,8 @@
 const { model } = require('mongoose');
 const { TraceSchema } = require('./model/trace');
+const { flattenChild } = require('../../lib/trace-helper');
 
 const TraceModel = model('Trace', TraceSchema);
-
-
-
-function flattenChild(root) {
-  let children = [];
-  function recursive(child) {
-    child.map((c, i) => {
-      let tmp = {};
-
-      if (!c.depth && !(c.depth === 0)) {
-        tmp.depth = 0;
-      } else {
-        tmp.depth = c.depth + 1;
-      }
-
-      tmp.index = i;
-      tmp.fieldName = c.fieldName;
-      tmp.type = c.type;
-      tmp.startTime = c.startTime.toString();
-      tmp.endTime = c.endTime.toString();
-
-      children.push(tmp);
-
-      if (c.child) {
-        c.child.map(subChildren => {
-          subChildren.child.forEach(subChild => {
-            subChild.depth = tmp.depth
-          });
-          recursive(subChildren.child)
-        })
-      }
-    });
-  }
-
-  recursive(root.child);
-  return children;
-}
 
 class MongoDao {
   static storeTrace (decoded) {

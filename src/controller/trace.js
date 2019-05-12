@@ -31,7 +31,7 @@ class Trace {
         storeTrace(decoded)
           .then(response => {
             return res.json({
-              message: 'received data successfully'
+              message: 'stored data successfully'
             });
           })
           .catch(err => {
