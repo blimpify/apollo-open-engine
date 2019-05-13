@@ -1,5 +1,15 @@
 const { Schema, model } = require('mongoose');
 
+
+const ChildSchema = new Schema({
+  index: Number,
+  depth: Number,
+  fieldName: String,
+  type: { type: String },
+  startTime: String,
+  endTime: String
+});
+
 const TraceSchema = new Schema({
   header: {
     hostname: String,
@@ -31,22 +41,16 @@ const TraceSchema = new Schema({
     }
   },
   clientReferenceId: String,
-  durationNs: String,
-  child: [
-    {
-      index: Number,
-      depth: Number,
-      fieldName: String,
-      type: { type: String },
-      startTime: String,
-      endTime: String
-    }
-  ]
+  durationNs: Number,
+  child: [ChildSchema]
 });
 
+const Child = model('Child', ChildSchema);
 const Trace = model('Trace', TraceSchema);
 
 module.exports = {
   TraceSchema,
-  Trace
+  Trace,
+  ChildSchema,
+  Child
 };

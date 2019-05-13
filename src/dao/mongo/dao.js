@@ -2,47 +2,83 @@ const { Trace } = require('./model/trace');
 const { flattenChild } = require('../../lib/trace-helper');
 
 
+async function tracesGroupedByQueryIds (parent, { skip = 0, limit = 15 }) {
+  return await Trace.aggregate([
+    {
+      $group : {
+        _id : "$queryId",
+        count: { $sum: 1 },
+        avgDurationNs: { $avg: "$durationNs" },
+        minDurationNs: { $min: "$durationNs" },
+        maxDurationNs: { $max: "$durationNs" },
+      },
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    }
+  ]);
+}
 
-class Dao {
-  static storeTrace (decoded) {
-    let tracesPerQuery = [];
+async function tracesByQueryId (parent, { queryId }) {
+  return await Trace.find({queryId})
+}
 
-    Object.keys(decoded.tracesPerQuery).map(key => {
-      // save individual traces
-      let traces = decoded.tracesPerQuery[key].trace;
-      traces.map(trace => {
-        let requestHeaders = {};
-        Object.keys(trace.http.requestHeaders).map(header => {
-          requestHeaders[header] = trace.http.requestHeaders[header].value[0];
-        });
+async function trace (parent, {
+  id
+}) {
+  return await Trace.findById(id)
+}
 
-        let http = {
-          method: trace.http.method,
-          requestHeaders
-        };
+async function traces (parent, { skip = 0, limit = 15 }) {
+  return await Trace.find().limit(limit).skip(skip)
+}
 
-        let child = flattenChild(trace.root);
 
-        let traceModel = new Trace({
-          header: decoded.header,
-          queryId: key,
-          endTime: trace.endTime,
-          startTime: trace.startTime,
-          clientName: trace.clientName,
-          clientVersion: trace.clientVersion,
-          durationNs: trace.durationNs,
-          http,
-          child
-        });
+function storeTrace (decoded) {
+  let tracesPerQuery = [];
 
-        tracesPerQuery.push(traceModel.save());
+  Object.keys(decoded.tracesPerQuery).map(key => {
+    // save individual traces
+    let traces = decoded.tracesPerQuery[key].trace;
+    traces.map(trace => {
+      let requestHeaders = {};
+      Object.keys(trace.http.requestHeaders).map(header => {
+        requestHeaders[header] = trace.http.requestHeaders[header].value[0];
       });
-    });
 
-    return Promise.all(tracesPerQuery)
-  }
+      let http = {
+        method: trace.http.method,
+        requestHeaders
+      };
+
+      let child = flattenChild(trace.root);
+
+      let traceModel = new Trace({
+        header: decoded.header,
+        queryId: key,
+        endTime: trace.endTime,
+        startTime: trace.startTime,
+        clientName: trace.clientName,
+        clientVersion: trace.clientVersion,
+        durationNs: trace.durationNs,
+        http,
+        child
+      });
+
+      tracesPerQuery.push(traceModel.save());
+    });
+  });
+
+  return Promise.all(tracesPerQuery)
 }
 
 module.exports = {
-  storeTrace: Dao.storeTrace
+  storeTrace,
+  tracesGroupedByQueryIds,
+  tracesByQueryId,
+  trace,
+  traces
 };

@@ -50,7 +50,42 @@ type Trace {
     child: [TraceChild]
 }
 
-type Query {
+type ValueStringAggregation {
+    value: String
+    count: Int
+    percentage: Float
+}
+
+type ValueNumberAggregation {
+    avg: Float
+    min: Float
+    max: Float
+}
+
+type TraceHeaderAggregation {
+    hostname: [ValueStringAggregation]
+    agentVersion: [ValueStringAggregation]
+    runtimeVersion: [ValueStringAggregation]
+    uname: [ValueStringAggregation]
+    schemaTag: [ValueStringAggregation]
+    schemaHash: [ValueStringAggregation]
+}
+
+type GroupStatistics {
+    durationNs: ValueNumberAggregation,
+    header: TraceHeaderAggregation,
+}
+
+type GroupByQueryId {
+    queryId: String
+    count: Int
+    statistics: GroupStatistics
     traces: [Trace]
+}
+
+type Query {
+    traces(skip: Int, limit: Int): [Trace]
     trace(id: ID!): Trace
+    tracesByQueryId(queryId: String!): [Trace]
+    tracesGroupedByQueryIds(skip: Int, limit: Int): [GroupByQueryId]
 }

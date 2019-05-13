@@ -18,7 +18,7 @@ const httpLogger = require('pino-http')({
   logger
 });
 
-const mongo_url = process.env.MONGO_URL || 'mongodb://localhost/apollo';
+const mongo_url = process.env.MONGO_URL || 'mongodb://localhost:27017/apollo';
 mongoose.Promise = global.Promise;
 mongoose.set('useCreateIndex', true);
 mongoose.connect(mongo_url, {useNewUrlParser: true});
