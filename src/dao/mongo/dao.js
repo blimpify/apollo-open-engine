@@ -1,8 +1,117 @@
 const { Trace } = require('./model/trace');
 const { flattenChild } = require('../../lib/trace-helper');
 
+async function traceHeaderAggregateByQueryId () {
+  return await Trace.aggregate([{
+    $group: {
+      _id: {
+        queryId: '# testquery test{chirpByAccountId(id:""){id}chirps{id}chirps{text}}',
+        hostname: "$header.hostname",
+        agentVersion: "$header.agentVersion",
+        runtimeVersion: "$header.runtimeVersion",
+        uname: "$header.uname",
+        schemaTag: "$header.schemaTag",
+        schemaHash: "$header.schemaHash",
+      },
+      count: {
+        $sum: 1
+      },
+    }
+  }, {
+    $group: {
+      _id: null,
+      hostname: {
+        "$push": {
+          "k": "$_id.hostname",
+          "v": "$count"
+        }
+      },
+      agentVersion: {
+        "$push": {
+          "k": "$_id.agentVersion",
+          "v": "$count"
+        }
+      },
+      runtimeVersion: {
+        "$push": {
+          "k": "$_id.runtimeVersion",
+          "v": "$count"
+        }
+      },
+      uname: {
+        "$push": {
+          "k": "$_id.uname",
+          "v": "$count"
+        }
+      },
+      schemaTag: {
+        "$push": {
+          "k": "$_id.schemaTag",
+          "v": "$count"
+        }
+      },
+      schemaHash: {
+        "$push": {
+          "k": "$_id.schemaHash",
+          "v": "$count"
+        }
+      }
+    }
+  }, {
+    $project: {
+      hostnames: {
+        total: {
+          $sum: '$hostname.v'
+        },
+        values: {
+          "$arrayToObject": "$hostname"
+        },
+      },
+      agentVersions: {
+        total: {
+          $sum: '$agentVersion.v'
+        },
+        values: {
+          "$arrayToObject": "$agentVersion"
+        },
+      },
+      runtimeVersions: {
+        total: {
+          $sum: '$runtimeVersion.v'
+        },
+        values: {
+          "$arrayToObject": "$runtimeVersion"
+        },
+      },
+      unames: {
+        total: {
+          $sum: '$uname.v'
+        },
+        values: {
+          "$arrayToObject": "$uname"
+        },
+      },
+      schemaTags: {
+        total: {
+          $sum: '$schemaTag.v'
+        },
+        values: {
+          "$arrayToObject": "$schemaTag"
+        },
+      },
+      schemaHashes: {
+        total: {
+          $sum: '$schemaHash.v'
+        },
+        values: {
+          "$arrayToObject": "$schemaHash"
+        },
+      },
+    }
+  }]);
+}
 
-async function tracesGroupedByQueryIds (parent, { skip = 0, limit = 15 }) {
+async function tracesDistinctByQueryId (parent, { skip = 0, limit = 15 }) {
   return await Trace.aggregate([
     {
       $group : {
@@ -75,10 +184,69 @@ function storeTrace (decoded) {
   return Promise.all(tracesPerQuery)
 }
 
+function prepareValueStringAggregation(header) {
+  return Object.keys(header.values).map((key, index) => {
+    return {
+      value: key,
+      count: header.values[key],
+      percentage: header.values[key] / header.total * 100
+    }
+  })
+}
+
+const TraceHeaderAggregation = {
+  hostname: async (headerStatistics) => {
+    return prepareValueStringAggregation(headerStatistics[0].hostnames);
+  },
+  agentVersion: async (headerStatistics) => {
+    return prepareValueStringAggregation(headerStatistics[0].agentVersions);
+  },
+  runtimeVersion: async (headerStatistics) => {
+    return prepareValueStringAggregation(headerStatistics[0].runtimeVersions);
+  },
+  uname: async (headerStatistics) => {
+    return prepareValueStringAggregation(headerStatistics[0].unames);
+  },
+  schemaTag: async (headerStatistics) => {
+    return prepareValueStringAggregation(headerStatistics[0].schemaTags);
+  },
+  schemaHash: async (headerStatistics) => {
+    return prepareValueStringAggregation(headerStatistics[0].schemaHashes);
+  }
+};
+
+const GroupStatistics = {
+  header: async (trace) => {
+    return await traceHeaderAggregateByQueryId(trace.queryId);
+  },
+  durationNs: async (trace) => {
+    return {
+      avg: trace.avgDurationNs,
+      min: trace.minDurationNs,
+      max: trace.maxDurationNs,
+    };
+  }
+};
+
+const GroupByQueryId = {
+  queryId: async (trace) => {
+    return await trace._id;
+  },
+  statistics: async (trace) => {
+    return trace;
+  },
+  traces: async (trace) => {
+    return await Trace.find({queryId: trace.queryId});
+  },
+};
+
 module.exports = {
   storeTrace,
-  tracesGroupedByQueryIds,
+  tracesDistinctByQueryId,
   tracesByQueryId,
   trace,
-  traces
+  traces,
+  GroupStatistics,
+  GroupByQueryId,
+  TraceHeaderAggregation
 };

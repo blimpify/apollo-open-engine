@@ -1,7 +1,15 @@
 const { readFileSync } = require('fs');
 const { resolve } = require('path');
-const { Trace } = require('./dao/mongo/model/trace');
-const { trace, traces, tracesByQueryId, tracesGroupedByQueryIds } = require('./dao/mongo/dao');
+
+const {
+  trace,
+  traces,
+  tracesByQueryId,
+  tracesDistinctByQueryId,
+  GroupStatistics,
+  GroupByQueryId,
+  TraceHeaderAggregation
+} = require('./dao/mongo/dao');
 
 const typeDefs = readFileSync(resolve(__dirname, '../schema.graphql'), 'utf8');
 
@@ -10,29 +18,12 @@ const resolvers = {
     traces,
     trace,
     tracesByQueryId,
-    tracesGroupedByQueryIds,
+    tracesDistinctByQueryId,
   },
-  GroupStatistics: {
-    durationNs: async (trace) => {
-      return {
-        avg: trace.avgDurationNs,
-        min: trace.minDurationNs,
-        max: trace.maxDurationNs,
-      }
-    }
-  },
-  GroupByQueryId: {
-    queryId: async (trace) => {
-      return await trace._id
-    },
-    statistics: async (trace) => {
-      return trace
-    },
-    traces: async (trace) => {
-      return await Trace.find({queryId: trace.queryId})
-    },
-  }
-}
+  GroupStatistics,
+  GroupByQueryId,
+  TraceHeaderAggregation
+};
 
 module.exports = {
   typeDefs,

@@ -87,5 +87,5 @@ type Query {
     traces(skip: Int, limit: Int): [Trace]
     trace(id: ID!): Trace
     tracesByQueryId(queryId: String!): [Trace]
-    tracesGroupedByQueryIds(skip: Int, limit: Int): [GroupByQueryId]
+    tracesDistinctByQueryId(skip: Int, limit: Int): [GroupByQueryId]
 }
